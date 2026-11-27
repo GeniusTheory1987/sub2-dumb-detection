@@ -26,6 +26,7 @@ export default {
     preview: 'HTML 预览',
     previewExcerptHint: '这是历史记录的截断摘录，完整预览仅对之后的检测生效。',
     previewUnavailable: '本次探测没有生成 HTML。',
+    previewScriptHint: '预览在沙箱中运行内联脚本以显示动画，外部资源不会加载。',
     loadingDetail: '加载详情中...',
     detailLoadFailed: '加载详情失败',
     generatedAt: '检测时间',

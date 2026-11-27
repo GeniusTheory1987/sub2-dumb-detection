@@ -192,6 +192,40 @@
               </div>
             </div>
 
+            <div>
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <h4 class="text-sm font-semibold text-gray-900 dark:text-white">
+                  {{ t('admin.pelican.preview') }}
+                </h4>
+                <span
+                  v-if="previewIsExcerpt"
+                  class="text-xs text-amber-600 dark:text-amber-300"
+                >
+                  {{ t('admin.pelican.previewExcerptHint') }}
+                </span>
+              </div>
+              <div v-if="previewHtml" class="mt-2 space-y-2">
+                <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-dark-700">
+                  <iframe
+                    :srcdoc="previewSrcdoc"
+                    sandbox="allow-scripts"
+                    referrerpolicy="no-referrer"
+                    class="h-[60vh] min-h-[360px] w-full bg-white"
+                    title="pelican-preview"
+                  ></iframe>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-dark-400">
+                  {{ t('admin.pelican.previewScriptHint') }}
+                </p>
+              </div>
+              <div
+                v-else
+                class="mt-2 rounded-xl border border-gray-200 px-4 py-8 text-center text-sm text-gray-500 dark:border-dark-700 dark:text-dark-400"
+              >
+                {{ t('admin.pelican.previewUnavailable') }}
+              </div>
+            </div>
+
             <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               <div class="rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-dark-700 dark:bg-dark-800/60">
                 <div class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-dark-400">
@@ -277,37 +311,6 @@
               <pre class="mt-1 whitespace-pre-wrap break-words text-xs text-red-700 dark:text-red-300">{{ detailCheck.error_message }}</pre>
             </div>
 
-            <div>
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <h4 class="text-sm font-semibold text-gray-900 dark:text-white">
-                  {{ t('admin.pelican.preview') }}
-                </h4>
-                <span
-                  v-if="previewIsExcerpt"
-                  class="text-xs text-amber-600 dark:text-amber-300"
-                >
-                  {{ t('admin.pelican.previewExcerptHint') }}
-                </span>
-              </div>
-              <div
-                v-if="previewHtml"
-                class="mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-dark-700"
-              >
-                <iframe
-                  :srcdoc="previewHtml"
-                  sandbox=""
-                  referrerpolicy="no-referrer"
-                  class="h-[60vh] min-h-[360px] w-full bg-white"
-                  title="pelican-preview"
-                ></iframe>
-              </div>
-              <div
-                v-else
-                class="mt-2 rounded-xl border border-gray-200 px-4 py-8 text-center text-sm text-gray-500 dark:border-dark-700 dark:text-dark-400"
-              >
-                {{ t('admin.pelican.previewUnavailable') }}
-              </div>
-            </div>
           </template>
         </div>
 
@@ -334,6 +337,7 @@ import type { Column } from '@/components/common/types'
 import { pelicanAPI } from '@/api/admin'
 import type { PelicanAccountOverview, PelicanCheck, PelicanOverview } from '@/api/admin/pelican'
 import { extractApiErrorMessage } from '@/utils/apiError'
+import { buildPreviewDocument } from '@/utils/htmlPreview'
 
 const { t } = useI18n()
 
@@ -352,6 +356,7 @@ let refreshTimer: number | undefined
 
 const accounts = computed(() => overview.value?.accounts ?? [])
 const previewHtml = computed(() => detailCheck.value?.output_html || detailCheck.value?.output_excerpt || '')
+const previewSrcdoc = computed(() => buildPreviewDocument(previewHtml.value))
 const previewIsExcerpt = computed(() => !detailCheck.value?.output_html && !!detailCheck.value?.output_excerpt)
 const columns = computed<Column[]>(() => [
   { key: 'account', label: t('admin.pelican.account') },

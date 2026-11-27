@@ -26,6 +26,7 @@ export default {
     preview: 'HTML preview',
     previewExcerptHint: 'This historical record has a truncated excerpt only; full previews apply to checks after this upgrade.',
     previewUnavailable: 'No HTML was generated for this check.',
+    previewScriptHint: 'The preview runs inline scripts in a sandbox to show animation; external resources are not loaded.',
     loadingDetail: 'Loading details...',
     detailLoadFailed: 'Failed to load check details',
     generatedAt: 'Checked at',
